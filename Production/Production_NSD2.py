@@ -13,17 +13,17 @@ import numpy as np
 
 # file and folder variables, simulation variables specified below
 
-peptide = 'H3K36'       # or ssK36
+peptide = 'ssK36'       # or ssK36
 sim_time = '100ns'      # simulation time 
 Eq = '5ns-2kJ'          # equilibration
-number_replicates = 1 # how many replicates will be produced
+number_replicates = 100 # how many replicates will be produced
 count = 1               # starting number of replicates
-traj_folder = 'NSD2-{}-complex2'.format(peptide)        # name of folder, where trajectories will be stored
+traj_folder	= 'NSD2_{}_{}_complex'.format(peptide, sim_time)       # name of folder, where trajectories will be stored
 
 
 # Input Files
 
-pdb = PDBFile('NSD2_{}.pdb'.format(peptide)) # PDB File of NSD2
+pdb = PDBFile('NSD2_{}_complex.pdb'.format(peptide)) # PDB File of NSD2
 protein = app.Modeller(pdb.topology, pdb.positions)
 sim_forcefield = ('amber14-all.xml')
 sim_watermodel = ('amber14/tip4pew.xml')
@@ -44,11 +44,11 @@ sim_ph = 7.0             # pH
 
 # Simulation Options
 
-Simulate_Steps = 500000       # production simulation time; 1 ns
+Simulate_Steps = 50000000       # production simulation time; 100ns
 
-npt_eq_Steps = 25000          # NPT equilibration; 0,05 ns
-SAM_restr_eq_Steps = 25000    # SAM restrained equilibration; 5 ns
-SAM_free_eq_Steps = 25000     # No restraints equilibration; 5 ns
+npt_eq_Steps = 2500000          # NPT equilibration; 5ns
+SAM_restr_eq_Steps = 2500000    # SAM restrained equilibration; 5ns
+SAM_free_eq_Steps = 2500000     # No restraints equilibration; 5ns
 
 restrained_eq_atoms = 'protein and chainid 1 name CA'   # MDTraj selection syntax; restrained backbone 
 force_eq_atoms = 100                                     # restraints in kilojoules_per_mole/unit.angstroms
@@ -287,13 +287,13 @@ while (count <= number_replicates):
  simulation = app.Simulation(solvated_protein.topology, system, integrator, platform, platformProperties)
  simulation.context.setState(state_free_EQ)
  simulation.reporters.append(app.StateDataReporter(stdout, 10000, step=True, potentialEnergy=True, temperature=True, progress=True, remainingTime=True, speed=True, totalSteps=Simulate_Steps, separator='\t'))
- simulation.reporters.append(HDF5Reporter(traj_folder + '/' + 'production_NSD2_{}_{}_{}.h5'.format(peptide, sim_time,count), 10000, atomSubset=trajectory_out_indices))
+ simulation.reporters.append(HDF5Reporter(traj_folder + '/' + 'production_NSD2_{}_{}_complex_{}.h5'.format(peptide, sim_time,count), 10000, atomSubset=trajectory_out_indices))
  print('production run of replicate {}...'.format(count))
  simulation.step(Simulate_Steps)
  state_production = simulation.context.getState(getPositions=True, getVelocities=True)
  state_production = simulation.context.getState(getPositions=True, enforcePeriodicBox=True)
  final_pos = state_production.getPositions()
- app.PDBFile.writeFile(simulation.topology, final_pos, open(traj_folder + '/' + 'production_NSD2_{}_{}_{}.pdb'.format(peptide, sim_time,count), 'w'), keepIds=True)
+ app.PDBFile.writeFile(simulation.topology, final_pos, open(traj_folder + '/' + 'production_NSD2_{}_{}_complex_{}.pdb'.format(peptide, sim_time,count), 'w'), keepIds=True)
  print('Successful production of replicate {}...'.format(count))
  del(simulation)
  
