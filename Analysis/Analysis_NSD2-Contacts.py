@@ -25,7 +25,7 @@ number_replicates = 1 # number of replicates to analyze
 # all trajectories in the target folder will be loaded, joined and superposed to one big trajectory, which is then analyzed
 traj_dict = {}
 for i in range(number_replicates):
-    folder = '/home/philipp/test_NSD2/NSD2-H3K36-complex/production_{}_{}_{}_{}.h5'.format(Protein, Peptide, sim_time, i+1)
+    folder = '/path-to-trajectory/production_{}_{}_{}_{}.h5'.format(Protein, Peptide, sim_time, i+1)
     print(folder)
     traj_dict[i+1]=mdt.load(folder)
 

@@ -20,7 +20,7 @@ number_replicates = 1
 count = 1
 
 while (count <= number_replicates):
- traj = mdt.load('/home/philipp/test_NSD2/NSD2-H3K36-complex/production_{}_{}_{}_{}.h5'.format(Protein, peptide, sim_time, count))
+ traj = mdt.load('/path-to-trajectory/production_{}_{}_{}_{}.h5'.format(Protein, peptide, sim_time, count))
  
  topology=traj.topology                  #here the topolgy of the trajectory is made
  table, bonds = topology.to_dataframe()  #here the atoms for the SN2 criteria are selected
